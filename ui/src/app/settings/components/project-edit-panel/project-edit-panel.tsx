@@ -23,10 +23,10 @@ export const ProjectEditPanel = (props: {nameReadonly?: boolean; defaultParams?:
                 destinations: [],
                 roles: [],
                 syncWindows: [],
-                clusterResourceWhitelist: [],
-                clusterResourceBlacklist: [],
-                namespaceResourceBlacklist: [],
-                namespaceResourceWhitelist: [],
+                clusterResourceAllowlist: [],
+                clusterResourceBlocklist: [],
+                namespaceResourceBlocklist: [],
+                namespaceResourceAllowlist: [],
                 orphanedResourceIgnoreList: [],
                 signatureKeys: [],
                 ...props.defaultParams
@@ -35,11 +35,11 @@ export const ProjectEditPanel = (props: {nameReadonly?: boolean; defaultParams?:
                 name: !params.name && 'Project name is required'
             })}
             preSubmit={(params: ProjectParams) => {
-                params.clusterResourceWhitelist.forEach((obj: models.GroupKind) => {
+                params.clusterResourceAllowlist.forEach((obj: models.GroupKind) => {
                     obj.group = obj.group.trim();
                     obj.kind = obj.kind.trim();
                 });
-                params.clusterResourceBlacklist.forEach((obj: models.GroupKind) => {
+                params.clusterResourceBlocklist.forEach((obj: models.GroupKind) => {
                     obj.group = obj.group.trim();
                     obj.kind = obj.kind.trim();
                 });
@@ -117,7 +117,7 @@ export const ProjectEditPanel = (props: {nameReadonly?: boolean; defaultParams?:
                     </DataLoader>
 
                     <React.Fragment>
-                        <h4>Whitelisted Cluster Resources</h4>
+                        <h4>Allowlisted Cluster Resources</h4>
                         <div>Cluster-scoped K8s API Groups and Kinds which are permitted to be deployed</div>
                         <div className='argo-table-list__head'>
                             <div className='row'>
@@ -125,28 +125,28 @@ export const ProjectEditPanel = (props: {nameReadonly?: boolean; defaultParams?:
                                 <div className='columns small-5'>KIND</div>
                             </div>
                         </div>
-                        {(api.values.clusterResourceWhitelist as Array<models.GroupKind>).map((_, i) => (
+                        {(api.values.clusterResourceAllowlist as Array<models.GroupKind>).map((_, i) => (
                             <div key={i} className='argo-table-list__row'>
                                 <div className='row'>
                                     <div className='columns small-5'>
-                                        <Text className='argo-field' field={['clusterResourceWhitelist', i, 'group']} />
+                                        <Text className='argo-field' field={['clusterResourceAllowlist', i, 'group']} />
                                     </div>
                                     <div className='columns small-5'>
-                                        <Text className='argo-field' field={['clusterResourceWhitelist', i, 'kind']} />
+                                        <Text className='argo-field' field={['clusterResourceAllowlist', i, 'kind']} />
                                     </div>
                                     <div className='columns small-2'>
-                                        <i className='fa fa-times' onClick={() => api.setValue('clusterResourceWhitelist', removeEl(api.values.clusterResourceWhitelist, i))} />
+                                        <i className='fa fa-times' onClick={() => api.setValue('clusterResourceAllowlist', removeEl(api.values.clusterResourceAllowlist, i))} />
                                     </div>
                                 </div>
                             </div>
                         ))}
-                        <a onClick={() => api.setValue('clusterResourceWhitelist', api.values.clusterResourceWhitelist.concat({group: '', kind: ''}))}>
-                            whitelist new cluster resource
+                        <a onClick={() => api.setValue('clusterResourceAllowlist', api.values.clusterResourceAllowlist.concat({group: '', kind: ''}))}>
+                            allowlist new cluster resource
                         </a>
                     </React.Fragment>
 
                     <React.Fragment>
-                        <h4>Blacklisted Cluster Resources</h4>
+                        <h4>Blocklisted Cluster Resources</h4>
                         <div>Cluster-scoped K8s API Groups and Kinds which are not permitted to be deployed</div>
                         <div className='argo-table-list__head'>
                             <div className='row'>
@@ -154,28 +154,28 @@ export const ProjectEditPanel = (props: {nameReadonly?: boolean; defaultParams?:
                                 <div className='columns small-5'>KIND</div>
                             </div>
                         </div>
-                        {(api.values.clusterResourceBlacklist as Array<models.GroupKind>).map((_, i) => (
+                        {(api.values.clusterResourceBlocklist as Array<models.GroupKind>).map((_, i) => (
                             <div key={i} className='argo-table-list__row'>
                                 <div className='row'>
                                     <div className='columns small-5'>
-                                        <Text className='argo-field' field={['clusterResourceBlacklist', i, 'group']} />
+                                        <Text className='argo-field' field={['clusterResourceBlocklist', i, 'group']} />
                                     </div>
                                     <div className='columns small-5'>
-                                        <Text className='argo-field' field={['clusterResourceBlacklist', i, 'kind']} />
+                                        <Text className='argo-field' field={['clusterResourceBlocklist', i, 'kind']} />
                                     </div>
                                     <div className='columns small-2'>
-                                        <i className='fa fa-times' onClick={() => api.setValue('clusterResourceBlacklist', removeEl(api.values.clusterResourceBlacklist, i))} />
+                                        <i className='fa fa-times' onClick={() => api.setValue('clusterResourceBlocklist', removeEl(api.values.clusterResourceBlocklist, i))} />
                                     </div>
                                 </div>
                             </div>
                         ))}
-                        <a onClick={() => api.setValue('clusterResourceBlacklist', api.values.clusterResourceBlacklist.concat({group: '', kind: ''}))}>
-                            blacklist new cluster resource
+                        <a onClick={() => api.setValue('clusterResourceBlocklist', api.values.clusterResourceBlocklist.concat({group: '', kind: ''}))}>
+                            blocklist new cluster resource
                         </a>
                     </React.Fragment>
 
                     <React.Fragment>
-                        <h4>Blacklisted Namespaced Resources</h4>
+                        <h4>Blocklisted Namespaced Resources</h4>
                         <div>
                             Namespace-scoped K8s API Groups and Kinds which are <strong>prohibited</strong> from being deployed
                         </div>
@@ -185,28 +185,28 @@ export const ProjectEditPanel = (props: {nameReadonly?: boolean; defaultParams?:
                                 <div className='columns small-5'>KIND</div>
                             </div>
                         </div>
-                        {(api.values.namespaceResourceBlacklist as Array<models.GroupKind>).map((_, i) => (
+                        {(api.values.namespaceResourceBlocklist as Array<models.GroupKind>).map((_, i) => (
                             <div key={i} className='argo-table-list__row'>
                                 <div className='row'>
                                     <div className='columns small-5'>
-                                        <Text className='argo-field' field={['namespaceResourceBlacklist', i, 'group']} />
+                                        <Text className='argo-field' field={['namespaceResourceBlocklist', i, 'group']} />
                                     </div>
                                     <div className='columns small-5'>
-                                        <Text className='argo-field' field={['namespaceResourceBlacklist', i, 'kind']} />
+                                        <Text className='argo-field' field={['namespaceResourceBlocklist', i, 'kind']} />
                                     </div>
                                     <div className='columns small-2'>
-                                        <i className='fa fa-times' onClick={() => api.setValue('namespaceResourceBlacklist', removeEl(api.values.namespaceResourceBlacklist, i))} />
+                                        <i className='fa fa-times' onClick={() => api.setValue('namespaceResourceBlocklist', removeEl(api.values.namespaceResourceBlocklist, i))} />
                                     </div>
                                 </div>
                             </div>
                         ))}
-                        <a onClick={() => api.setValue('namespaceResourceBlacklist', api.values.namespaceResourceBlacklist.concat({group: '', kind: ''}))}>
-                            blacklist new namespaced resource
+                        <a onClick={() => api.setValue('namespaceResourceBlocklist', api.values.namespaceResourceBlocklist.concat({group: '', kind: ''}))}>
+                            blocklist new namespaced resource
                         </a>
                     </React.Fragment>
 
                     <React.Fragment>
-                        <h4>Whitelisted Namespaced Resources</h4>
+                        <h4>Allowlisted Namespaced Resources</h4>
                         <div>
                             Namespace-scoped K8s API Groups and Kinds which are <strong>permitted</strong> to deploy
                         </div>
@@ -216,23 +216,23 @@ export const ProjectEditPanel = (props: {nameReadonly?: boolean; defaultParams?:
                                 <div className='columns small-5'>KIND</div>
                             </div>
                         </div>
-                        {(api.values.namespaceResourceWhitelist as Array<models.GroupKind>).map((_, i) => (
+                        {(api.values.namespaceResourceAllowlist as Array<models.GroupKind>).map((_, i) => (
                             <div key={i} className='argo-table-list__row'>
                                 <div className='row'>
                                     <div className='columns small-5'>
-                                        <Text className='argo-field' field={['namespaceResourceWhitelist', i, 'group']} />
+                                        <Text className='argo-field' field={['namespaceResourceAllowlist', i, 'group']} />
                                     </div>
                                     <div className='columns small-5'>
-                                        <Text className='argo-field' field={['namespaceResourceWhitelist', i, 'kind']} />
+                                        <Text className='argo-field' field={['namespaceResourceAllowlist', i, 'kind']} />
                                     </div>
                                     <div className='columns small-2'>
-                                        <i className='fa fa-times' onClick={() => api.setValue('namespaceResourceWhitelist', removeEl(api.values.namespaceResourceWhitelist, i))} />
+                                        <i className='fa fa-times' onClick={() => api.setValue('namespaceResourceAllowlist', removeEl(api.values.namespaceResourceAllowlist, i))} />
                                     </div>
                                 </div>
                             </div>
                         ))}
-                        <a onClick={() => api.setValue('namespaceResourceWhitelist', api.values.namespaceResourceWhitelist.concat({group: '', kind: ''}))}>
-                            whitelist new namespaced resource
+                        <a onClick={() => api.setValue('namespaceResourceAllowlist', api.values.namespaceResourceAllowlist.concat({group: '', kind: ''}))}>
+                            allowlist new namespaced resource
                         </a>
                     </React.Fragment>
 

@@ -48,42 +48,42 @@ function loadGlobal(name: string) {
     return services.projects.getGlobalProjects(name).then(projs =>
         (projs || []).reduce(
             (merged, proj) => {
-                merged.clusterResourceBlacklist = merged.clusterResourceBlacklist.concat(proj.spec.clusterResourceBlacklist || []);
-                merged.clusterResourceWhitelist = merged.clusterResourceWhitelist.concat(proj.spec.clusterResourceWhitelist || []);
-                merged.namespaceResourceBlacklist = merged.namespaceResourceBlacklist.concat(proj.spec.namespaceResourceBlacklist || []);
-                merged.namespaceResourceWhitelist = merged.namespaceResourceWhitelist.concat(proj.spec.namespaceResourceWhitelist || []);
+                merged.clusterResourceBlocklist = merged.clusterResourceBlocklist.concat(proj.spec.clusterResourceBlocklist || []);
+                merged.clusterResourceAllowlist = merged.clusterResourceAllowlist.concat(proj.spec.clusterResourceAllowlist || []);
+                merged.namespaceResourceBlocklist = merged.namespaceResourceBlocklist.concat(proj.spec.namespaceResourceBlocklist || []);
+                merged.namespaceResourceAllowlist = merged.namespaceResourceAllowlist.concat(proj.spec.namespaceResourceAllowlist || []);
 
-                merged.clusterResourceBlacklist = merged.clusterResourceBlacklist.filter((item, index) => {
+                merged.clusterResourceBlocklist = merged.clusterResourceBlocklist.filter((item, index) => {
                     return (
                         index ===
-                        merged.clusterResourceBlacklist.findIndex(obj => {
+                        merged.clusterResourceBlocklist.findIndex(obj => {
                             return obj.kind === item.kind && obj.group === item.group;
                         })
                     );
                 });
 
-                merged.clusterResourceWhitelist = merged.clusterResourceWhitelist.filter((item, index) => {
+                merged.clusterResourceAllowlist = merged.clusterResourceAllowlist.filter((item, index) => {
                     return (
                         index ===
-                        merged.clusterResourceWhitelist.findIndex(obj => {
+                        merged.clusterResourceAllowlist.findIndex(obj => {
                             return obj.kind === item.kind && obj.group === item.group;
                         })
                     );
                 });
 
-                merged.namespaceResourceBlacklist = merged.namespaceResourceBlacklist.filter((item, index) => {
+                merged.namespaceResourceBlocklist = merged.namespaceResourceBlocklist.filter((item, index) => {
                     return (
                         index ===
-                        merged.namespaceResourceBlacklist.findIndex(obj => {
+                        merged.namespaceResourceBlocklist.findIndex(obj => {
                             return obj.kind === item.kind && obj.group === item.group;
                         })
                     );
                 });
 
-                merged.namespaceResourceWhitelist = merged.namespaceResourceWhitelist.filter((item, index) => {
+                merged.namespaceResourceAllowlist = merged.namespaceResourceAllowlist.filter((item, index) => {
                     return (
                         index ===
-                        merged.namespaceResourceWhitelist.findIndex(obj => {
+                        merged.namespaceResourceAllowlist.findIndex(obj => {
                             return obj.kind === item.kind && obj.group === item.group;
                         })
                     );
@@ -92,12 +92,12 @@ function loadGlobal(name: string) {
                 return merged;
             },
             {
-                clusterResourceBlacklist: new Array<GroupKind>(),
-                namespaceResourceBlacklist: new Array<GroupKind>(),
-                namespaceResourceWhitelist: new Array<GroupKind>(),
+                clusterResourceBlocklist: new Array<GroupKind>(),
+                namespaceResourceBlocklist: new Array<GroupKind>(),
+                namespaceResourceAllowlist: new Array<GroupKind>(),
                 sourceRepos: [],
                 signatureKeys: [],
-                clusterResourceWhitelist: [],
+                clusterResourceAllowlist: [],
                 destinations: [],
                 description: '',
                 roles: []
@@ -671,13 +671,13 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                     title={<React.Fragment>CLUSTER RESOURCE ALLOW LIST {helpTip('Cluster-scoped K8s API Groups and Kinds which are permitted to be deployed')}</React.Fragment>}
                     view={
                         <React.Fragment>
-                            {proj.spec.clusterResourceWhitelist ? (
+                            {proj.spec.clusterResourceAllowlist ? (
                                 <React.Fragment>
                                     <div className='row white-box__details-row'>
                                         <div className='columns small-4'>Kind</div>
                                         <div className='columns small-8'>Group</div>
                                     </div>
-                                    {proj.spec.clusterResourceWhitelist.map((resource, i) => (
+                                    {proj.spec.clusterResourceAllowlist.map((resource, i) => (
                                         <div className='row white-box__details-row' key={i}>
                                             <div className='columns small-4'>{resource.kind}</div>
                                             <div className='columns small-8'>{resource.group}</div>
@@ -695,12 +695,12 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                 <div className='columns small-4'>Kind</div>
                                 <div className='columns small-8'>Group</div>
                             </div>
-                            {(formApi.values.spec.clusterResourceWhitelist || []).map((_: Project, i: number) => (
+                            {(formApi.values.spec.clusterResourceAllowlist || []).map((_: Project, i: number) => (
                                 <div className='row white-box__details-row' key={i}>
                                     <div className='columns small-4'>
                                         <FormField
                                             formApi={formApi}
-                                            field={`spec.clusterResourceWhitelist[${i}].kind`}
+                                            field={`spec.clusterResourceAllowlist[${i}].kind`}
                                             component={AutocompleteField}
                                             componentProps={{items: ResourceKinds}}
                                         />
@@ -708,14 +708,14 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                     <div className='columns small-8'>
                                         <FormField
                                             formApi={formApi}
-                                            field={`spec.clusterResourceWhitelist[${i}].group`}
+                                            field={`spec.clusterResourceAllowlist[${i}].group`}
                                             component={AutocompleteField}
                                             componentProps={{items: Groups}}
                                         />
                                     </div>
                                     <i
                                         className='fa fa-times'
-                                        onClick={() => formApi.setValue('spec.clusterResourceWhitelist', removeEl(formApi.values.spec.clusterResourceWhitelist, i))}
+                                        onClick={() => formApi.setValue('spec.clusterResourceAllowlist', removeEl(formApi.values.spec.clusterResourceAllowlist, i))}
                                     />
                                 </div>
                             ))}
@@ -723,8 +723,8 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                 className='argo-button argo-button--short'
                                 onClick={() =>
                                     formApi.setValue(
-                                        'spec.clusterResourceWhitelist',
-                                        (formApi.values.spec.clusterResourceWhitelist || []).concat({
+                                        'spec.clusterResourceAllowlist',
+                                        (formApi.values.spec.clusterResourceAllowlist || []).concat({
                                             group: '*',
                                             kind: '*'
                                         })
@@ -737,7 +737,7 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                     items={[]}
                 />
 
-                {globalProj.clusterResourceWhitelist.length > 0 && (
+                {globalProj.clusterResourceAllowlist.length > 0 && (
                     <div className='white-box editable-panel'>
                         <div className='white-box__details'>
                             <p>
@@ -750,7 +750,7 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                         <div className='columns small-4'>Kind</div>
                                         <div className='columns small-8'>Group</div>
                                     </div>
-                                    {globalProj.clusterResourceWhitelist.map((resource, i) => (
+                                    {globalProj.clusterResourceAllowlist.map((resource, i) => (
                                         <div className='row white-box__details-row' key={i}>
                                             <div className='columns small-4'>{resource.kind}</div>
                                             <div className='columns small-8'>{resource.group}</div>
@@ -768,13 +768,13 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                     title={<React.Fragment>CLUSTER RESOURCE DENY LIST {helpTip('Cluster-scoped K8s API Groups and Kinds which are not permitted to be deployed')}</React.Fragment>}
                     view={
                         <React.Fragment>
-                            {proj.spec.clusterResourceBlacklist ? (
+                            {proj.spec.clusterResourceBlocklist ? (
                                 <React.Fragment>
                                     <div className='row white-box__details-row'>
                                         <div className='columns small-4'>Kind</div>
                                         <div className='columns small-8'>Group</div>
                                     </div>
-                                    {proj.spec.clusterResourceBlacklist.map((resource, i) => (
+                                    {proj.spec.clusterResourceBlocklist.map((resource, i) => (
                                         <div className='row white-box__details-row' key={i}>
                                             <div className='columns small-4'>{resource.kind}</div>
                                             <div className='columns small-8'>{resource.group}</div>
@@ -792,12 +792,12 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                 <div className='columns small-4'>Kind</div>
                                 <div className='columns small-8'>Group</div>
                             </div>
-                            {(formApi.values.spec.clusterResourceBlacklist || []).map((_: Project, i: number) => (
+                            {(formApi.values.spec.clusterResourceBlocklist || []).map((_: Project, i: number) => (
                                 <div className='row white-box__details-row' key={i}>
                                     <div className='columns small-4'>
                                         <FormField
                                             formApi={formApi}
-                                            field={`spec.clusterResourceBlacklist[${i}].kind`}
+                                            field={`spec.clusterResourceBlocklist[${i}].kind`}
                                             component={AutocompleteField}
                                             componentProps={{items: ResourceKinds}}
                                         />
@@ -805,14 +805,14 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                     <div className='columns small-8'>
                                         <FormField
                                             formApi={formApi}
-                                            field={`spec.clusterResourceBlacklist[${i}].group`}
+                                            field={`spec.clusterResourceBlocklist[${i}].group`}
                                             component={AutocompleteField}
                                             componentProps={{items: Groups}}
                                         />
                                     </div>
                                     <i
                                         className='fa fa-times'
-                                        onClick={() => formApi.setValue('spec.clusterResourceBlacklist', removeEl(formApi.values.spec.clusterResourceBlacklist, i))}
+                                        onClick={() => formApi.setValue('spec.clusterResourceBlocklist', removeEl(formApi.values.spec.clusterResourceBlocklist, i))}
                                     />
                                 </div>
                             ))}
@@ -820,8 +820,8 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                 className='argo-button argo-button--short'
                                 onClick={() =>
                                     formApi.setValue(
-                                        'spec.clusterResourceBlacklist',
-                                        (formApi.values.spec.clusterResourceBlacklist || []).concat({
+                                        'spec.clusterResourceBlocklist',
+                                        (formApi.values.spec.clusterResourceBlocklist || []).concat({
                                             group: '*',
                                             kind: '*'
                                         })
@@ -834,7 +834,7 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                     items={[]}
                 />
 
-                {globalProj.clusterResourceBlacklist.length > 0 && (
+                {globalProj.clusterResourceBlocklist.length > 0 && (
                     <div className='white-box editable-panel'>
                         <div className='white-box__details'>
                             <p>
@@ -847,7 +847,7 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                         <div className='columns small-4'>Kind</div>
                                         <div className='columns small-8'>Group</div>
                                     </div>
-                                    {globalProj.clusterResourceBlacklist.map((resource, i) => (
+                                    {globalProj.clusterResourceBlocklist.map((resource, i) => (
                                         <div className='row white-box__details-row' key={i}>
                                             <div className='columns small-4'>{resource.kind}</div>
                                             <div className='columns small-8'>{resource.group}</div>
@@ -865,13 +865,13 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                     title={<React.Fragment>NAMESPACE RESOURCE ALLOW LIST {helpTip('Namespace-scoped K8s API Groups and Kinds which are permitted to deploy')}</React.Fragment>}
                     view={
                         <React.Fragment>
-                            {proj.spec.namespaceResourceWhitelist ? (
+                            {proj.spec.namespaceResourceAllowlist ? (
                                 <React.Fragment>
                                     <div className='row white-box__details-row'>
                                         <div className='columns small-4'>Kind</div>
                                         <div className='columns small-8'>Group</div>
                                     </div>
-                                    {proj.spec.namespaceResourceWhitelist.map((resource, i) => (
+                                    {proj.spec.namespaceResourceAllowlist.map((resource, i) => (
                                         <div className='row white-box__details-row' key={i}>
                                             <div className='columns small-4'>{resource.kind}</div>
                                             <div className='columns small-8'>{resource.group}</div>
@@ -891,12 +891,12 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                         <div className='columns small-4'>Kind</div>
                                         <div className='columns small-8'>Group</div>
                                     </div>
-                                    {(formApi.values.spec.namespaceResourceWhitelist || []).map((_: Project, i: number) => (
+                                    {(formApi.values.spec.namespaceResourceAllowlist || []).map((_: Project, i: number) => (
                                         <div className='row white-box__details-row' key={i}>
                                             <div className='columns small-4'>
                                                 <FormField
                                                     formApi={formApi}
-                                                    field={`spec.namespaceResourceWhitelist[${i}].kind`}
+                                                    field={`spec.namespaceResourceAllowlist[${i}].kind`}
                                                     component={AutocompleteField}
                                                     componentProps={{items: ResourceKinds}}
                                                 />
@@ -904,14 +904,14 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                             <div className='columns small-8'>
                                                 <FormField
                                                     formApi={formApi}
-                                                    field={`spec.namespaceResourceWhitelist[${i}].group`}
+                                                    field={`spec.namespaceResourceAllowlist[${i}].group`}
                                                     component={AutocompleteField}
                                                     componentProps={{items: Groups}}
                                                 />
                                             </div>
                                             <i
                                                 className='fa fa-times'
-                                                onClick={() => formApi.setValue('spec.namespaceResourceWhitelist', removeEl(formApi.values.spec.namespaceResourceWhitelist, i))}
+                                                onClick={() => formApi.setValue('spec.namespaceResourceAllowlist', removeEl(formApi.values.spec.namespaceResourceAllowlist, i))}
                                             />
                                         </div>
                                     ))}
@@ -919,8 +919,8 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                         className='argo-button argo-button--short'
                                         onClick={() =>
                                             formApi.setValue(
-                                                'spec.namespaceResourceWhitelist',
-                                                (formApi.values.spec.namespaceResourceWhitelist || []).concat({
+                                                'spec.namespaceResourceAllowlist',
+                                                (formApi.values.spec.namespaceResourceAllowlist || []).concat({
                                                     group: '*',
                                                     kind: '*'
                                                 })
@@ -935,7 +935,7 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                     items={[]}
                 />
 
-                {globalProj.namespaceResourceWhitelist.length > 0 && (
+                {globalProj.namespaceResourceAllowlist.length > 0 && (
                     <div className='white-box editable-panel'>
                         <div className='white-box__details'>
                             <p>
@@ -948,7 +948,7 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                         <div className='columns small-4'>Kind</div>
                                         <div className='columns small-8'>Group</div>
                                     </div>
-                                    {globalProj.namespaceResourceWhitelist.map((resource, i) => (
+                                    {globalProj.namespaceResourceAllowlist.map((resource, i) => (
                                         <div className='row white-box__details-row' key={i}>
                                             <div className='columns small-4'>{resource.kind}</div>
                                             <div className='columns small-8'>{resource.group}</div>
@@ -970,13 +970,13 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                     }
                     view={
                         <React.Fragment>
-                            {proj.spec.namespaceResourceBlacklist ? (
+                            {proj.spec.namespaceResourceBlocklist ? (
                                 <React.Fragment>
                                     <div className='row white-box__details-row'>
                                         <div className='columns small-4'>Kind</div>
                                         <div className='columns small-8'>Group</div>
                                     </div>
-                                    {proj.spec.namespaceResourceBlacklist.map((resource, i) => (
+                                    {proj.spec.namespaceResourceBlocklist.map((resource, i) => (
                                         <div className='row white-box__details-row' key={i}>
                                             <div className='columns small-4'>{resource.kind}</div>
                                             <div className='columns small-8'>{resource.group}</div>
@@ -996,12 +996,12 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                         <div className='columns small-4'>Kind</div>
                                         <div className='columns small-8'>Group</div>
                                     </div>
-                                    {(formApi.values.spec.namespaceResourceBlacklist || []).map((_: Project, i: number) => (
+                                    {(formApi.values.spec.namespaceResourceBlocklist || []).map((_: Project, i: number) => (
                                         <div className='row white-box__details-row' key={i}>
                                             <div className='columns small-4'>
                                                 <FormField
                                                     formApi={formApi}
-                                                    field={`spec.namespaceResourceBlacklist[${i}].kind`}
+                                                    field={`spec.namespaceResourceBlocklist[${i}].kind`}
                                                     component={AutocompleteField}
                                                     componentProps={{items: ResourceKinds}}
                                                 />
@@ -1009,14 +1009,14 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                             <div className='columns small-8'>
                                                 <FormField
                                                     formApi={formApi}
-                                                    field={`spec.namespaceResourceBlacklist[${i}].group`}
+                                                    field={`spec.namespaceResourceBlocklist[${i}].group`}
                                                     component={AutocompleteField}
                                                     componentProps={{items: Groups}}
                                                 />
                                             </div>
                                             <i
                                                 className='fa fa-times'
-                                                onClick={() => formApi.setValue('spec.namespaceResourceBlacklist', removeEl(formApi.values.spec.namespaceResourceBlacklist, i))}
+                                                onClick={() => formApi.setValue('spec.namespaceResourceBlocklist', removeEl(formApi.values.spec.namespaceResourceBlocklist, i))}
                                             />
                                         </div>
                                     ))}
@@ -1024,8 +1024,8 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                         className='argo-button argo-button--short'
                                         onClick={() =>
                                             formApi.setValue(
-                                                'spec.namespaceResourceBlacklist',
-                                                (formApi.values.spec.namespaceResourceBlacklist || []).concat({
+                                                'spec.namespaceResourceBlocklist',
+                                                (formApi.values.spec.namespaceResourceBlocklist || []).concat({
                                                     group: '*',
                                                     kind: '*'
                                                 })
@@ -1040,7 +1040,7 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                     items={[]}
                 />
 
-                {globalProj.namespaceResourceBlacklist.length > 0 && (
+                {globalProj.namespaceResourceBlocklist.length > 0 && (
                     <div className='white-box editable-panel'>
                         <div className='white-box__details'>
                             <p>
@@ -1048,13 +1048,13 @@ export class ProjectDetails extends React.Component<RouteComponentProps<{name: s
                                 {helpTip('Namespace-scoped K8s API Groups and Kinds which are prohibited from being deployed from global project')}
                             </p>
                             <React.Fragment>
-                                {globalProj.namespaceResourceBlacklist.length > 0 ? (
+                                {globalProj.namespaceResourceBlocklist.length > 0 ? (
                                     <React.Fragment>
                                         <div className='row white-box__details-row'>
                                             <div className='columns small-4'>Kind</div>
                                             <div className='columns small-8'>Group</div>
                                         </div>
-                                        {globalProj.namespaceResourceBlacklist.map((resource, i) => (
+                                        {globalProj.namespaceResourceBlocklist.map((resource, i) => (
                                             <div className='row white-box__details-row' key={i}>
                                                 <div className='columns small-4'>{resource.kind}</div>
                                                 <div className='columns small-8'>{resource.group}</div>

@@ -632,10 +632,10 @@ export interface ProjectSpec {
     destinations: ApplicationDestination[];
     description: string;
     roles: ProjectRole[];
-    clusterResourceWhitelist: GroupKind[];
-    clusterResourceBlacklist: GroupKind[];
-    namespaceResourceBlacklist: GroupKind[];
-    namespaceResourceWhitelist: GroupKind[];
+    clusterResourceAllowlist: GroupKind[];
+    clusterResourceBlocklist: GroupKind[];
+    namespaceResourceBlocklist: GroupKind[];
+    namespaceResourceAllowlist: GroupKind[];
     signatureKeys: ProjectSignatureKey[];
     orphanedResources?: {warn?: boolean; ignore: OrphanedResource[]};
     syncWindows?: SyncWindows;

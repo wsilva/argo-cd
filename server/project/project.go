@@ -286,11 +286,11 @@ func (s *Server) Update(ctx context.Context, q *project.ProjectUpdateRequest) (*
 		}
 	}
 
-	clusterResourceWhitelistsEqual := reflect.DeepEqual(q.Project.Spec.ClusterResourceWhitelist, oldProj.Spec.ClusterResourceWhitelist)
-	clusterResourceBlacklistsEqual := reflect.DeepEqual(q.Project.Spec.ClusterResourceBlacklist, oldProj.Spec.ClusterResourceBlacklist)
-	namespacesResourceBlacklistsEqual := reflect.DeepEqual(q.Project.Spec.NamespaceResourceBlacklist, oldProj.Spec.NamespaceResourceBlacklist)
-	namespacesResourceWhitelistsEqual := reflect.DeepEqual(q.Project.Spec.NamespaceResourceWhitelist, oldProj.Spec.NamespaceResourceWhitelist)
-	if !clusterResourceWhitelistsEqual || !clusterResourceBlacklistsEqual || !namespacesResourceBlacklistsEqual || !namespacesResourceWhitelistsEqual {
+	clusterResourceAllowlistsEqual := reflect.DeepEqual(q.Project.Spec.ClusterResourceAllowlist, oldProj.Spec.ClusterResourceAllowlist)
+	clusterResourceBlocklistsEqual := reflect.DeepEqual(q.Project.Spec.ClusterResourceBlocklist, oldProj.Spec.ClusterResourceBlocklist)
+	namespacesResourceBlocklistsEqual := reflect.DeepEqual(q.Project.Spec.NamespaceResourceBlocklist, oldProj.Spec.NamespaceResourceBlocklist)
+	namespacesResourceAllowlistsEqual := reflect.DeepEqual(q.Project.Spec.NamespaceResourceAllowlist, oldProj.Spec.NamespaceResourceAllowlist)
+	if !clusterResourceAllowlistsEqual || !clusterResourceBlocklistsEqual || !namespacesResourceBlocklistsEqual || !namespacesResourceAllowlistsEqual {
 		for _, cluster := range q.Project.Spec.DestinationClusters() {
 			if err := s.enf.EnforceErr(ctx.Value("claims"), rbacpolicy.ResourceClusters, rbacpolicy.ActionUpdate, cluster); err != nil {
 				return nil, err

@@ -9,10 +9,10 @@ export interface ProjectParams {
     sourceRepos: string[];
     destinations: models.ApplicationDestination[];
     roles: models.ProjectRole[];
-    clusterResourceWhitelist: models.GroupKind[];
-    clusterResourceBlacklist: models.GroupKind[];
-    namespaceResourceBlacklist: models.GroupKind[];
-    namespaceResourceWhitelist: models.GroupKind[];
+    clusterResourceAllowlist: models.GroupKind[];
+    clusterResourceBlocklist: models.GroupKind[];
+    namespaceResourceBlocklist: models.GroupKind[];
+    namespaceResourceAllowlist: models.GroupKind[];
     orphanedResourceIgnoreList: models.OrphanedResource[];
     signatureKeys: models.ProjectSignatureKey[];
     orphanedResourcesEnabled: boolean;
@@ -80,10 +80,10 @@ function paramsToProj(params: ProjectParams) {
             destinations: params.destinations,
             roles: params.roles,
             syncWindows: params.syncWindows,
-            clusterResourceWhitelist: params.clusterResourceWhitelist,
-            clusterResourceBlacklist: params.clusterResourceBlacklist,
-            namespaceResourceBlacklist: params.namespaceResourceBlacklist,
-            namespaceResourceWhitelist: params.namespaceResourceWhitelist,
+            clusterResourceAllowlist: params.clusterResourceAllowlist,
+            clusterResourceBlocklist: params.clusterResourceBlocklist,
+            namespaceResourceBlocklist: params.namespaceResourceBlocklist,
+            namespaceResourceAllowlist: params.namespaceResourceAllowlist,
             signatureKeys: params.signatureKeys,
             orphanedResources: (params.orphanedResourcesEnabled && {warn: !!params.orphanedResourcesWarn, ignore: params.orphanedResourceIgnoreList}) || null
         }

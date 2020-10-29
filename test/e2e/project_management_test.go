@@ -450,19 +450,19 @@ func createAndConfigGlobalProject() error {
 		return err
 	}
 
-	projGlobal.Spec.NamespaceResourceBlacklist = []metav1.GroupKind{
+	projGlobal.Spec.NamespaceResourceBlocklist = []metav1.GroupKind{
 		{Group: "", Kind: "Service"},
 	}
 
-	projGlobal.Spec.NamespaceResourceWhitelist = []metav1.GroupKind{
+	projGlobal.Spec.NamespaceResourceAllowlist = []metav1.GroupKind{
 		{Group: "", Kind: "Deployment"},
 	}
 
-	projGlobal.Spec.ClusterResourceWhitelist = []metav1.GroupKind{
+	projGlobal.Spec.ClusterResourceAllowlist = []metav1.GroupKind{
 		{Group: "", Kind: "Job"},
 	}
 
-	projGlobal.Spec.ClusterResourceBlacklist = []metav1.GroupKind{
+	projGlobal.Spec.ClusterResourceBlocklist = []metav1.GroupKind{
 		{Group: "", Kind: "Pod"},
 	}
 
@@ -520,11 +520,11 @@ func TestGetVirtualProjectNoMatch(t *testing.T) {
 		"--path", guestbookPath, "--project", proj.Name, "--dest-server", common.KubernetesInternalAPIServerAddr, "--dest-namespace", fixture.DeploymentNamespace())
 	assert.NoError(t, err)
 
-	//App trying to sync a resource which is not blacked listed anywhere
+	//App trying to sync a resource which is not blocked listed anywhere
 	_, err = fixture.RunCli("app", "sync", fixture.Name(), "--resource", "apps:Deployment:guestbook-ui", "--timeout", fmt.Sprintf("%v", 10))
 	assert.NoError(t, err)
 
-	//app trying to sync a resource which is black listed by global project
+	//app trying to sync a resource which is block listed by global project
 	_, err = fixture.RunCli("app", "sync", fixture.Name(), "--resource", ":Service:guestbook-ui", "--timeout", fmt.Sprintf("%v", 10))
 	assert.NoError(t, err)
 
@@ -557,12 +557,12 @@ func TestGetVirtualProjectMatch(t *testing.T) {
 		"--path", guestbookPath, "--project", proj.Name, "--dest-server", common.KubernetesInternalAPIServerAddr, "--dest-namespace", fixture.DeploymentNamespace())
 	assert.NoError(t, err)
 
-	//App trying to sync a resource which is not blacked listed anywhere
+	//App trying to sync a resource which is not blocked listed anywhere
 	_, err = fixture.RunCli("app", "sync", fixture.Name(), "--resource", "apps:Deployment:guestbook-ui", "--timeout", fmt.Sprintf("%v", 10))
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "Blocked by sync window")
 
-	//app trying to sync a resource which is black listed by global project
+	//app trying to sync a resource which is block listed by global project
 	_, err = fixture.RunCli("app", "sync", fixture.Name(), "--resource", ":Service:guestbook-ui", "--timeout", fmt.Sprintf("%v", 10))
 	assert.Contains(t, err.Error(), "Blocked by sync window")
 

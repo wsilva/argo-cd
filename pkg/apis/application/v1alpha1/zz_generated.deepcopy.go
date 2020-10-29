@@ -107,13 +107,13 @@ func (in *AppProjectSpec) DeepCopyInto(out *AppProjectSpec) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
-	if in.ClusterResourceWhitelist != nil {
-		in, out := &in.ClusterResourceWhitelist, &out.ClusterResourceWhitelist
+	if in.ClusterResourceAllowlist != nil {
+		in, out := &in.ClusterResourceAllowlist, &out.ClusterResourceAllowlist
 		*out = make([]v1.GroupKind, len(*in))
 		copy(*out, *in)
 	}
-	if in.NamespaceResourceBlacklist != nil {
-		in, out := &in.NamespaceResourceBlacklist, &out.NamespaceResourceBlacklist
+	if in.NamespaceResourceBlocklist != nil {
+		in, out := &in.NamespaceResourceBlocklist, &out.NamespaceResourceBlocklist
 		*out = make([]v1.GroupKind, len(*in))
 		copy(*out, *in)
 	}
@@ -133,8 +133,8 @@ func (in *AppProjectSpec) DeepCopyInto(out *AppProjectSpec) {
 			}
 		}
 	}
-	if in.NamespaceResourceWhitelist != nil {
-		in, out := &in.NamespaceResourceWhitelist, &out.NamespaceResourceWhitelist
+	if in.NamespaceResourceAllowlist != nil {
+		in, out := &in.NamespaceResourceAllowlist, &out.NamespaceResourceAllowlist
 		*out = make([]v1.GroupKind, len(*in))
 		copy(*out, *in)
 	}
@@ -143,8 +143,8 @@ func (in *AppProjectSpec) DeepCopyInto(out *AppProjectSpec) {
 		*out = make([]SignatureKey, len(*in))
 		copy(*out, *in)
 	}
-	if in.ClusterResourceBlacklist != nil {
-		in, out := &in.ClusterResourceBlacklist, &out.ClusterResourceBlacklist
+	if in.ClusterResourceBlocklist != nil {
+		in, out := &in.ClusterResourceBlocklist, &out.ClusterResourceBlocklist
 		*out = make([]v1.GroupKind, len(*in))
 		copy(*out, *in)
 	}

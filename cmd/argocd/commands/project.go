@@ -564,9 +564,9 @@ func modifyResourceListCmd(cmdUse, cmdDesc string, clientOpts *argocdclient.Clie
 		defaultList string
 	)
 	if namespacedList {
-		defaultList = "black"
+		defaultList = "block"
 	} else {
-		defaultList = "white"
+		defaultList = "allow"
 	}
 	var command = &cobra.Command{
 		Use:   cmdUse,
@@ -582,24 +582,24 @@ func modifyResourceListCmd(cmdUse, cmdDesc string, clientOpts *argocdclient.Clie
 
 			proj, err := projIf.Get(context.Background(), &projectpkg.ProjectQuery{Name: projName})
 			errors.CheckError(err)
-			var list, white, black *[]metav1.GroupKind
+			var list, allow, block *[]metav1.GroupKind
 			var listAction, listDesc string
 			var add bool
 			if namespacedList {
-				white, black = &proj.Spec.NamespaceResourceWhitelist, &proj.Spec.NamespaceResourceBlacklist
+				allow, block = &proj.Spec.NamespaceResourceAllowlist, &proj.Spec.NamespaceResourceBlocklist
 				listDesc = "namespaced"
 			} else {
-				white, black = &proj.Spec.ClusterResourceWhitelist, &proj.Spec.ClusterResourceBlacklist
+				allow, block = &proj.Spec.ClusterResourceAllowlist, &proj.Spec.ClusterResourceBlocklist
 				listDesc = "cluster"
 			}
 
-			if listType == "white" {
-				list = white
-				listAction = "whitelisted"
+			if listType == "allow" {
+				list = allow
+				listAction = "allowlisted"
 				add = allow
 			} else {
-				list = black
-				listAction = "blacklisted"
+				list = block
+				listAction = "blocklisted"
 				add = !allow
 			}
 
@@ -609,35 +609,35 @@ func modifyResourceListCmd(cmdUse, cmdDesc string, clientOpts *argocdclient.Clie
 			}
 		},
 	}
-	command.Flags().StringVarP(&listType, "list", "l", defaultList, "Use blacklist or whitelist. This can only be 'white' or 'black'")
+	command.Flags().StringVarP(&listType, "list", "l", defaultList, "Use blocklist or allowlist. This can only be 'allow' or 'block'")
 	return command
 }
 
 // NewProjectAllowNamespaceResourceCommand returns a new instance of an `deny-cluster-resources` command
 func NewProjectAllowNamespaceResourceCommand(clientOpts *argocdclient.ClientOptions) *cobra.Command {
 	use := "allow-namespace-resource PROJECT GROUP KIND"
-	desc := "Removes a namespaced API resource from the blacklist or add a namespaced API resource to the whitelist"
+	desc := "Removes a namespaced API resource from the blocklist or add a namespaced API resource to the allowlist"
 	return modifyResourceListCmd(use, desc, clientOpts, true, true)
 }
 
 // NewProjectDenyNamespaceResourceCommand returns a new instance of an `argocd proj deny-namespace-resource` command
 func NewProjectDenyNamespaceResourceCommand(clientOpts *argocdclient.ClientOptions) *cobra.Command {
 	use := "deny-namespace-resource PROJECT GROUP KIND"
-	desc := "Adds a namespaced API resource to the blacklist or removes a namespaced API resource from the whitelist"
+	desc := "Adds a namespaced API resource to the blocklist or removes a namespaced API resource from the allowlist"
 	return modifyResourceListCmd(use, desc, clientOpts, false, true)
 }
 
 // NewProjectDenyClusterResourceCommand returns a new instance of an `deny-cluster-resource` command
 func NewProjectDenyClusterResourceCommand(clientOpts *argocdclient.ClientOptions) *cobra.Command {
 	use := "deny-cluster-resource PROJECT GROUP KIND"
-	desc := "Removes a cluster-scoped API resource from the whitelist and adds it to blacklist"
+	desc := "Removes a cluster-scoped API resource from the allowlist and adds it to blocklist"
 	return modifyResourceListCmd(use, desc, clientOpts, false, false)
 }
 
 // NewProjectAllowClusterResourceCommand returns a new instance of an `argocd proj allow-cluster-resource` command
 func NewProjectAllowClusterResourceCommand(clientOpts *argocdclient.ClientOptions) *cobra.Command {
 	use := "allow-cluster-resource PROJECT GROUP KIND"
-	desc := "Adds a cluster-scoped API resource to the whitelist and removes it from blacklist"
+	desc := "Adds a cluster-scoped API resource to the allowlist and removes it from blocklist"
 	return modifyResourceListCmd(use, desc, clientOpts, true, false)
 }
 
@@ -710,7 +710,7 @@ func printProjectNames(projects []v1alpha1.AppProject) {
 // Print table of project info
 func printProjectTable(projects []v1alpha1.AppProject) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-	fmt.Fprintf(w, "NAME\tDESCRIPTION\tDESTINATIONS\tSOURCES\tCLUSTER-RESOURCE-WHITELIST\tNAMESPACE-RESOURCE-BLACKLIST\tSIGNATURE-KEYS\tORPHANED-RESOURCES\n")
+	fmt.Fprintf(w, "NAME\tDESCRIPTION\tDESTINATIONS\tSOURCES\tCLUSTER-RESOURCE-ALLOWLIST\tNAMESPACE-RESOURCE-BLOCKLIST\tSIGNATURE-KEYS\tORPHANED-RESOURCES\n")
 	for _, p := range projects {
 		printProjectLine(w, &p)
 	}
@@ -759,7 +759,7 @@ func formatOrphanedResources(p *v1alpha1.AppProject) string {
 }
 
 func printProjectLine(w io.Writer, p *v1alpha1.AppProject) {
-	var destinations, sourceRepos, clusterWhitelist, namespaceBlacklist, signatureKeys string
+	var destinations, sourceRepos, clusterAllowlist, namespaceBlocklist, signatureKeys string
 	switch len(p.Spec.Destinations) {
 	case 0:
 		destinations = "<none>"
@@ -776,19 +776,19 @@ func printProjectLine(w io.Writer, p *v1alpha1.AppProject) {
 	default:
 		sourceRepos = fmt.Sprintf("%d repos", len(p.Spec.SourceRepos))
 	}
-	switch len(p.Spec.ClusterResourceWhitelist) {
+	switch len(p.Spec.ClusterResourceAllowlist) {
 	case 0:
-		clusterWhitelist = "<none>"
+		clusterAllowlist = "<none>"
 	case 1:
-		clusterWhitelist = fmt.Sprintf("%s/%s", p.Spec.ClusterResourceWhitelist[0].Group, p.Spec.ClusterResourceWhitelist[0].Kind)
+		clusterAllowlist = fmt.Sprintf("%s/%s", p.Spec.ClusterResourceAllowlist[0].Group, p.Spec.ClusterResourceAllowlist[0].Kind)
 	default:
-		clusterWhitelist = fmt.Sprintf("%d resources", len(p.Spec.ClusterResourceWhitelist))
+		clusterAllowlist = fmt.Sprintf("%d resources", len(p.Spec.ClusterResourceAllowlist))
 	}
-	switch len(p.Spec.NamespaceResourceBlacklist) {
+	switch len(p.Spec.NamespaceResourceBlocklist) {
 	case 0:
-		namespaceBlacklist = "<none>"
+		namespaceBlocklist = "<none>"
 	default:
-		namespaceBlacklist = fmt.Sprintf("%d resources", len(p.Spec.NamespaceResourceBlacklist))
+		namespaceBlocklist = fmt.Sprintf("%d resources", len(p.Spec.NamespaceResourceBlocklist))
 	}
 	switch len(p.Spec.SignatureKeys) {
 	case 0:
@@ -796,7 +796,7 @@ func printProjectLine(w io.Writer, p *v1alpha1.AppProject) {
 	default:
 		signatureKeys = fmt.Sprintf("%d key(s)", len(p.Spec.SignatureKeys))
 	}
-	fmt.Fprintf(w, "%s\t%s\t%v\t%v\t%v\t%v\t%v\t%v\n", p.Name, p.Spec.Description, destinations, sourceRepos, clusterWhitelist, namespaceBlacklist, signatureKeys, formatOrphanedResources(p))
+	fmt.Fprintf(w, "%s\t%s\t%v\t%v\t%v\t%v\t%v\t%v\n", p.Name, p.Spec.Description, destinations, sourceRepos, clusterAllowlist, namespaceBlocklist, signatureKeys, formatOrphanedResources(p))
 }
 
 func printProject(p *v1alpha1.AppProject) {
@@ -825,24 +825,24 @@ func printProject(p *v1alpha1.AppProject) {
 		fmt.Printf(printProjFmtStr, "", p.Spec.SourceRepos[i])
 	}
 
-	// Print whitelisted cluster resources
+	// Print allowlisted cluster resources
 	cwl0 := "<none>"
-	if len(p.Spec.ClusterResourceWhitelist) > 0 {
-		cwl0 = fmt.Sprintf("%s/%s", p.Spec.ClusterResourceWhitelist[0].Group, p.Spec.ClusterResourceWhitelist[0].Kind)
+	if len(p.Spec.ClusterResourceAllowlist) > 0 {
+		cwl0 = fmt.Sprintf("%s/%s", p.Spec.ClusterResourceAllowlist[0].Group, p.Spec.ClusterResourceAllowlist[0].Kind)
 	}
-	fmt.Printf(printProjFmtStr, "Whitelisted Cluster Resources:", cwl0)
-	for i := 1; i < len(p.Spec.ClusterResourceWhitelist); i++ {
-		fmt.Printf(printProjFmtStr, "", fmt.Sprintf("%s/%s", p.Spec.ClusterResourceWhitelist[i].Group, p.Spec.ClusterResourceWhitelist[i].Kind))
+	fmt.Printf(printProjFmtStr, "Allowlisted Cluster Resources:", cwl0)
+	for i := 1; i < len(p.Spec.ClusterResourceAllowlist); i++ {
+		fmt.Printf(printProjFmtStr, "", fmt.Sprintf("%s/%s", p.Spec.ClusterResourceAllowlist[i].Group, p.Spec.ClusterResourceAllowlist[i].Kind))
 	}
 
-	// Print blacklisted namespaced resources
+	// Print blocklisted namespaced resources
 	rbl0 := "<none>"
-	if len(p.Spec.NamespaceResourceBlacklist) > 0 {
-		rbl0 = fmt.Sprintf("%s/%s", p.Spec.NamespaceResourceBlacklist[0].Group, p.Spec.NamespaceResourceBlacklist[0].Kind)
+	if len(p.Spec.NamespaceResourceBlocklist) > 0 {
+		rbl0 = fmt.Sprintf("%s/%s", p.Spec.NamespaceResourceBlocklist[0].Group, p.Spec.NamespaceResourceBlocklist[0].Kind)
 	}
-	fmt.Printf(printProjFmtStr, "Blacklisted Namespaced Resources:", rbl0)
-	for i := 1; i < len(p.Spec.NamespaceResourceBlacklist); i++ {
-		fmt.Printf(printProjFmtStr, "", fmt.Sprintf("%s/%s", p.Spec.NamespaceResourceBlacklist[i].Group, p.Spec.NamespaceResourceBlacklist[i].Kind))
+	fmt.Printf(printProjFmtStr, "Blocklisted Namespaced Resources:", rbl0)
+	for i := 1; i < len(p.Spec.NamespaceResourceBlocklist); i++ {
+		fmt.Printf(printProjFmtStr, "", fmt.Sprintf("%s/%s", p.Spec.NamespaceResourceBlocklist[i].Group, p.Spec.NamespaceResourceBlocklist[i].Kind))
 	}
 
 	// Print required signature keys

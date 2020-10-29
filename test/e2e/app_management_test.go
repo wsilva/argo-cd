@@ -1126,7 +1126,7 @@ func TestNotPermittedResources(t *testing.T) {
 	ctx.ProjectSpec(AppProjectSpec{
 		SourceRepos:  []string{"*"},
 		Destinations: []ApplicationDestination{{Namespace: DeploymentNamespace(), Server: "*"}},
-		NamespaceResourceBlacklist: []metav1.GroupKind{
+		NamespaceResourceBlocklist: []metav1.GroupKind{
 			{Group: "", Kind: "Service"},
 		}}).
 		And(func() {

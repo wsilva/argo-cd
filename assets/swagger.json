@@ -3577,7 +3577,7 @@
     },
     "v1alpha1AppProject": {
       "type": "object",
-      "title": "AppProject provides a logical grouping of applications, providing controls for:\n* where the apps may deploy to (cluster whitelist)\n* what may be deployed (repository whitelist, resource whitelist/blacklist)\n* who can access these applications (roles, OIDC group claims bindings)\n* and what they can do (RBAC policies)\n* automation access to these roles (JWT tokens)\n+genclient\n+genclient:noStatus\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+kubebuilder:resource:path=appprojects,shortName=appproj;appprojs",
+      "title": "AppProject provides a logical grouping of applications, providing controls for:\n* where the apps may deploy to (cluster allowlist)\n* what may be deployed (repository allowlist, resource allowlist/blocklist)\n* who can access these applications (roles, OIDC group claims bindings)\n* and what they can do (RBAC policies)\n* automation access to these roles (JWT tokens)\n+genclient\n+genclient:noStatus\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+kubebuilder:resource:path=appprojects,shortName=appproj;appprojs",
       "properties": {
         "metadata": {
           "$ref": "#/definitions/v1ObjectMeta"
@@ -3609,16 +3609,16 @@
       "type": "object",
       "title": "AppProjectSpec is the specification of an AppProject",
       "properties": {
-        "clusterResourceBlacklist": {
+        "clusterResourceBlocklist": {
           "type": "array",
-          "title": "ClusterResourceBlacklist contains list of blacklisted cluster level resources",
+          "title": "ClusterResourceBlocklist contains list of blocklisted cluster level resources",
           "items": {
             "$ref": "#/definitions/v1GroupKind"
           }
         },
-        "clusterResourceWhitelist": {
+        "clusterResourceAllowlist": {
           "type": "array",
-          "title": "ClusterResourceWhitelist contains list of whitelisted cluster level resources",
+          "title": "ClusterResourceAllowlist contains list of allowlisted cluster level resources",
           "items": {
             "$ref": "#/definitions/v1GroupKind"
           }
@@ -3634,16 +3634,16 @@
             "$ref": "#/definitions/v1alpha1ApplicationDestination"
           }
         },
-        "namespaceResourceBlacklist": {
+        "namespaceResourceBlocklist": {
           "type": "array",
-          "title": "NamespaceResourceBlacklist contains list of blacklisted namespace level resources",
+          "title": "NamespaceResourceBlocklist contains list of blocklisted namespace level resources",
           "items": {
             "$ref": "#/definitions/v1GroupKind"
           }
         },
-        "namespaceResourceWhitelist": {
+        "namespaceResourceAllowlist": {
           "type": "array",
-          "title": "NamespaceResourceWhitelist contains list of whitelisted namespace level resources",
+          "title": "NamespaceResourceAllowlist contains list of allowlisted namespace level resources",
           "items": {
             "$ref": "#/definitions/v1GroupKind"
           }

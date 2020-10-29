@@ -3070,10 +3070,10 @@ func (m *AppProjectSpec) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.ClusterResourceBlacklist) > 0 {
-		for iNdEx := len(m.ClusterResourceBlacklist) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.ClusterResourceBlocklist) > 0 {
+		for iNdEx := len(m.ClusterResourceBlocklist) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.ClusterResourceBlacklist[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.ClusterResourceBlocklist[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -3098,10 +3098,10 @@ func (m *AppProjectSpec) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x52
 		}
 	}
-	if len(m.NamespaceResourceWhitelist) > 0 {
-		for iNdEx := len(m.NamespaceResourceWhitelist) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.NamespaceResourceAllowlist) > 0 {
+		for iNdEx := len(m.NamespaceResourceAllowlist) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.NamespaceResourceWhitelist[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.NamespaceResourceAllowlist[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -3138,10 +3138,10 @@ func (m *AppProjectSpec) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x3a
 	}
-	if len(m.NamespaceResourceBlacklist) > 0 {
-		for iNdEx := len(m.NamespaceResourceBlacklist) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.NamespaceResourceBlocklist) > 0 {
+		for iNdEx := len(m.NamespaceResourceBlocklist) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.NamespaceResourceBlacklist[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.NamespaceResourceBlocklist[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -3152,10 +3152,10 @@ func (m *AppProjectSpec) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x32
 		}
 	}
-	if len(m.ClusterResourceWhitelist) > 0 {
-		for iNdEx := len(m.ClusterResourceWhitelist) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.ClusterResourceAllowlist) > 0 {
+		for iNdEx := len(m.ClusterResourceAllowlist) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.ClusterResourceWhitelist[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.ClusterResourceAllowlist[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -7674,14 +7674,14 @@ func (m *AppProjectSpec) Size() (n int) {
 			n += 1 + l + sovGenerated(uint64(l))
 		}
 	}
-	if len(m.ClusterResourceWhitelist) > 0 {
-		for _, e := range m.ClusterResourceWhitelist {
+	if len(m.ClusterResourceAllowlist) > 0 {
+		for _, e := range m.ClusterResourceAllowlist {
 			l = e.Size()
 			n += 1 + l + sovGenerated(uint64(l))
 		}
 	}
-	if len(m.NamespaceResourceBlacklist) > 0 {
-		for _, e := range m.NamespaceResourceBlacklist {
+	if len(m.NamespaceResourceBlocklist) > 0 {
+		for _, e := range m.NamespaceResourceBlocklist {
 			l = e.Size()
 			n += 1 + l + sovGenerated(uint64(l))
 		}
@@ -7696,8 +7696,8 @@ func (m *AppProjectSpec) Size() (n int) {
 			n += 1 + l + sovGenerated(uint64(l))
 		}
 	}
-	if len(m.NamespaceResourceWhitelist) > 0 {
-		for _, e := range m.NamespaceResourceWhitelist {
+	if len(m.NamespaceResourceAllowlist) > 0 {
+		for _, e := range m.NamespaceResourceAllowlist {
 			l = e.Size()
 			n += 1 + l + sovGenerated(uint64(l))
 		}
@@ -7708,8 +7708,8 @@ func (m *AppProjectSpec) Size() (n int) {
 			n += 1 + l + sovGenerated(uint64(l))
 		}
 	}
-	if len(m.ClusterResourceBlacklist) > 0 {
-		for _, e := range m.ClusterResourceBlacklist {
+	if len(m.ClusterResourceBlocklist) > 0 {
+		for _, e := range m.ClusterResourceBlocklist {
 			l = e.Size()
 			n += 1 + l + sovGenerated(uint64(l))
 		}
@@ -9426,48 +9426,48 @@ func (this *AppProjectSpec) String() string {
 		repeatedStringForRoles += strings.Replace(strings.Replace(f.String(), "ProjectRole", "ProjectRole", 1), `&`, ``, 1) + ","
 	}
 	repeatedStringForRoles += "}"
-	repeatedStringForClusterResourceWhitelist := "[]GroupKind{"
-	for _, f := range this.ClusterResourceWhitelist {
-		repeatedStringForClusterResourceWhitelist += fmt.Sprintf("%v", f) + ","
+	repeatedStringForClusterResourceAllowlist := "[]GroupKind{"
+	for _, f := range this.ClusterResourceAllowlist {
+		repeatedStringForClusterResourceAllowlist += fmt.Sprintf("%v", f) + ","
 	}
-	repeatedStringForClusterResourceWhitelist += "}"
-	repeatedStringForNamespaceResourceBlacklist := "[]GroupKind{"
-	for _, f := range this.NamespaceResourceBlacklist {
-		repeatedStringForNamespaceResourceBlacklist += fmt.Sprintf("%v", f) + ","
+	repeatedStringForClusterResourceAllowlist += "}"
+	repeatedStringForNamespaceResourceBlocklist := "[]GroupKind{"
+	for _, f := range this.NamespaceResourceBlocklist {
+		repeatedStringForNamespaceResourceBlocklist += fmt.Sprintf("%v", f) + ","
 	}
-	repeatedStringForNamespaceResourceBlacklist += "}"
+	repeatedStringForNamespaceResourceBlocklist += "}"
 	repeatedStringForSyncWindows := "[]*SyncWindow{"
 	for _, f := range this.SyncWindows {
 		repeatedStringForSyncWindows += strings.Replace(f.String(), "SyncWindow", "SyncWindow", 1) + ","
 	}
 	repeatedStringForSyncWindows += "}"
-	repeatedStringForNamespaceResourceWhitelist := "[]GroupKind{"
-	for _, f := range this.NamespaceResourceWhitelist {
-		repeatedStringForNamespaceResourceWhitelist += fmt.Sprintf("%v", f) + ","
+	repeatedStringForNamespaceResourceAllowlist := "[]GroupKind{"
+	for _, f := range this.NamespaceResourceAllowlist {
+		repeatedStringForNamespaceResourceAllowlist += fmt.Sprintf("%v", f) + ","
 	}
-	repeatedStringForNamespaceResourceWhitelist += "}"
+	repeatedStringForNamespaceResourceAllowlist += "}"
 	repeatedStringForSignatureKeys := "[]SignatureKey{"
 	for _, f := range this.SignatureKeys {
 		repeatedStringForSignatureKeys += strings.Replace(strings.Replace(f.String(), "SignatureKey", "SignatureKey", 1), `&`, ``, 1) + ","
 	}
 	repeatedStringForSignatureKeys += "}"
-	repeatedStringForClusterResourceBlacklist := "[]GroupKind{"
-	for _, f := range this.ClusterResourceBlacklist {
-		repeatedStringForClusterResourceBlacklist += fmt.Sprintf("%v", f) + ","
+	repeatedStringForClusterResourceBlocklist := "[]GroupKind{"
+	for _, f := range this.ClusterResourceBlocklist {
+		repeatedStringForClusterResourceBlocklist += fmt.Sprintf("%v", f) + ","
 	}
-	repeatedStringForClusterResourceBlacklist += "}"
+	repeatedStringForClusterResourceBlocklist += "}"
 	s := strings.Join([]string{`&AppProjectSpec{`,
 		`SourceRepos:` + fmt.Sprintf("%v", this.SourceRepos) + `,`,
 		`Destinations:` + repeatedStringForDestinations + `,`,
 		`Description:` + fmt.Sprintf("%v", this.Description) + `,`,
 		`Roles:` + repeatedStringForRoles + `,`,
-		`ClusterResourceWhitelist:` + repeatedStringForClusterResourceWhitelist + `,`,
-		`NamespaceResourceBlacklist:` + repeatedStringForNamespaceResourceBlacklist + `,`,
+		`ClusterResourceAllowlist:` + repeatedStringForClusterResourceAllowlist + `,`,
+		`NamespaceResourceBlocklist:` + repeatedStringForNamespaceResourceBlocklist + `,`,
 		`OrphanedResources:` + strings.Replace(this.OrphanedResources.String(), "OrphanedResourcesMonitorSettings", "OrphanedResourcesMonitorSettings", 1) + `,`,
 		`SyncWindows:` + repeatedStringForSyncWindows + `,`,
-		`NamespaceResourceWhitelist:` + repeatedStringForNamespaceResourceWhitelist + `,`,
+		`NamespaceResourceAllowlist:` + repeatedStringForNamespaceResourceAllowlist + `,`,
 		`SignatureKeys:` + repeatedStringForSignatureKeys + `,`,
-		`ClusterResourceBlacklist:` + repeatedStringForClusterResourceBlacklist + `,`,
+		`ClusterResourceBlocklist:` + repeatedStringForClusterResourceBlocklist + `,`,
 		`}`,
 	}, "")
 	return s
@@ -11285,7 +11285,7 @@ func (m *AppProjectSpec) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClusterResourceWhitelist", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ClusterResourceAllowlist", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -11312,14 +11312,14 @@ func (m *AppProjectSpec) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClusterResourceWhitelist = append(m.ClusterResourceWhitelist, v1.GroupKind{})
-			if err := m.ClusterResourceWhitelist[len(m.ClusterResourceWhitelist)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.ClusterResourceAllowlist = append(m.ClusterResourceAllowlist, v1.GroupKind{})
+			if err := m.ClusterResourceAllowlist[len(m.ClusterResourceAllowlist)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NamespaceResourceBlacklist", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field NamespaceResourceBlocklist", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -11346,8 +11346,8 @@ func (m *AppProjectSpec) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NamespaceResourceBlacklist = append(m.NamespaceResourceBlacklist, v1.GroupKind{})
-			if err := m.NamespaceResourceBlacklist[len(m.NamespaceResourceBlacklist)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.NamespaceResourceBlocklist = append(m.NamespaceResourceBlocklist, v1.GroupKind{})
+			if err := m.NamespaceResourceBlocklist[len(m.NamespaceResourceBlocklist)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -11423,7 +11423,7 @@ func (m *AppProjectSpec) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 9:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NamespaceResourceWhitelist", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field NamespaceResourceAllowlist", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -11450,8 +11450,8 @@ func (m *AppProjectSpec) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NamespaceResourceWhitelist = append(m.NamespaceResourceWhitelist, v1.GroupKind{})
-			if err := m.NamespaceResourceWhitelist[len(m.NamespaceResourceWhitelist)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.NamespaceResourceAllowlist = append(m.NamespaceResourceAllowlist, v1.GroupKind{})
+			if err := m.NamespaceResourceAllowlist[len(m.NamespaceResourceAllowlist)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -11491,7 +11491,7 @@ func (m *AppProjectSpec) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 11:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClusterResourceBlacklist", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ClusterResourceBlocklist", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -11518,8 +11518,8 @@ func (m *AppProjectSpec) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClusterResourceBlacklist = append(m.ClusterResourceBlacklist, v1.GroupKind{})
-			if err := m.ClusterResourceBlacklist[len(m.ClusterResourceBlacklist)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.ClusterResourceBlocklist = append(m.ClusterResourceBlocklist, v1.GroupKind{})
+			if err := m.ClusterResourceBlocklist[len(m.ClusterResourceBlocklist)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

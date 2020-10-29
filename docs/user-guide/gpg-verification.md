@@ -191,8 +191,8 @@ Name:                             gpg
 Description:                      GnuPG verification
 Destinations:                     *,*
 Repositories:                     *
-Whitelisted Cluster Resources:    */*
-Blacklisted Namespaced Resources: <none>
+Allowlisted Cluster Resources:    */*
+Blocklisted Namespaced Resources: <none>
 Signature keys:                   4AEE18F83AFDEB23, 07E34825A909B250
 Orphaned Resources:               disabled
 ```
@@ -234,14 +234,14 @@ metadata:
   name: gpg
   namespace: argocd
 spec:
-  clusterResourceWhitelist:
+  clusterResourceAllowlist:
   - group: '*'
     kind: '*'
   description: GnuPG verification
   destinations:
   - namespace: '*'
     server: '*'
-  namespaceResourceWhitelist:
+  namespaceResourceAllowlist:
   - group: '*'
     kind: '*'
   signatureKeys:

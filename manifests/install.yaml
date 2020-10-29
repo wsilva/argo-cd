@@ -1675,7 +1675,7 @@ spec:
   scope: Namespaced
   validation:
     openAPIV3Schema:
-      description: 'AppProject provides a logical grouping of applications, providing controls for: * where the apps may deploy to (cluster whitelist) * what may be deployed (repository whitelist, resource whitelist/blacklist) * who can access these applications (roles, OIDC group claims bindings) * and what they can do (RBAC policies) * automation access to these roles (JWT tokens)'
+      description: 'AppProject provides a logical grouping of applications, providing controls for: * where the apps may deploy to (cluster allowlist) * what may be deployed (repository allowlist, resource allowlist/blocklist) * who can access these applications (roles, OIDC group claims bindings) * and what they can do (RBAC policies) * automation access to these roles (JWT tokens)'
       properties:
         apiVersion:
           description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
@@ -1688,8 +1688,8 @@ spec:
         spec:
           description: AppProjectSpec is the specification of an AppProject
           properties:
-            clusterResourceBlacklist:
-              description: ClusterResourceBlacklist contains list of blacklisted cluster level resources
+            clusterResourceBlocklist:
+              description: ClusterResourceBlocklist contains list of blocklisted cluster level resources
               items:
                 description: GroupKind specifies a Group and a Kind, but does not force a version.  This is useful for identifying concepts during lookup stages without having partially valid types
                 properties:
@@ -1702,8 +1702,8 @@ spec:
                 - kind
                 type: object
               type: array
-            clusterResourceWhitelist:
-              description: ClusterResourceWhitelist contains list of whitelisted cluster level resources
+            clusterResourceAllowlist:
+              description: ClusterResourceAllowlist contains list of allowlisted cluster level resources
               items:
                 description: GroupKind specifies a Group and a Kind, but does not force a version.  This is useful for identifying concepts during lookup stages without having partially valid types
                 properties:
@@ -1735,8 +1735,8 @@ spec:
                     type: string
                 type: object
               type: array
-            namespaceResourceBlacklist:
-              description: NamespaceResourceBlacklist contains list of blacklisted namespace level resources
+            namespaceResourceBlocklist:
+              description: NamespaceResourceBlocklist contains list of blocklisted namespace level resources
               items:
                 description: GroupKind specifies a Group and a Kind, but does not force a version.  This is useful for identifying concepts during lookup stages without having partially valid types
                 properties:
@@ -1749,8 +1749,8 @@ spec:
                 - kind
                 type: object
               type: array
-            namespaceResourceWhitelist:
-              description: NamespaceResourceWhitelist contains list of whitelisted namespace level resources
+            namespaceResourceAllowlist:
+              description: NamespaceResourceAllowlist contains list of allowlisted namespace level resources
               items:
                 description: GroupKind specifies a Group and a Kind, but does not force a version.  This is useful for identifying concepts during lookup stages without having partially valid types
                 properties:

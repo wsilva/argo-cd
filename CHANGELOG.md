@@ -187,7 +187,7 @@ customizations, custom resource health checks, and more.
 * feat: Display link between OLM ClusterServiceVersion and it's OperatorGroup (#3390)
 * feat: Introduce sync-option SkipDryRunOnMissingResource=true (#2873) (#3247)
 * feat: support normalizing CRD fields that use known built-in K8S types (#3357)
-* feat: Whitelisted namespace resources (#2900)
+* feat: Allowlisted namespace resources (#2900)
 
 #### Bug Fixes
 
@@ -776,7 +776,7 @@ Support for Git LFS enabled repositories - now you can store Helm charts as tar 
 - Make sure endpoint is shown as a child of service (#2060)
 - Word-wraps app info in the table and list views. (#2004)
 - Project source/destination removal should consider wildcards (#1780)
-- Repo whitelisting in UI does not support wildcards (#2000)
+- Repo allowlisting in UI does not support wildcards (#2000)
 - Wait for CRD creation during sync process (#1940)
 - Added a button to select out of sync items in the sync panel (#1902)
 - Proper handling of an excluded resource in an application (#1621)
@@ -857,13 +857,13 @@ systems by making it easier to find other components inside and outside Argo CD.
 - Adds `argocd app sync APPNAME --async` [#1728](https://github.com/argoproj/argo-cd/issues/1728)
 - Allow users to define app specific urls to expose in the UI [#1677](https://github.com/argoproj/argo-cd/issues/1677)
 - Error view instead of blank page in UI [#1375](https://github.com/argoproj/argo-cd/issues/1375)
-- Project Editor: Whitelisted Cluster Resources doesn't strip whitespace [#1693](https://github.com/argoproj/argo-cd/issues/1693)
+- Project Editor: Allowlisted Cluster Resources doesn't strip whitespace [#1693](https://github.com/argoproj/argo-cd/issues/1693)
 - Eliminate unnecessary git interactions for top-level resource changes (#1919)
 - Ability to rotate the bearer token used to manage external clusters (#1084)
 
 #### Bug Fixes
 
-- Project Editor: Whitelisted Cluster Resources doesn't strip whitespace [#1693](https://github.com/argoproj/argo-cd/issues/1693)
+- Project Editor: Allowlisted Cluster Resources doesn't strip whitespace [#1693](https://github.com/argoproj/argo-cd/issues/1693)
 - \[ui small bug\] menu position outside block [#1711](https://github.com/argoproj/argo-cd/issues/1711)
 - UI will crash when create application without destination namespace [#1701](https://github.com/argoproj/argo-cd/issues/1701)
 - ArgoCD synchronization failed due to internal error [#1697](https://github.com/argoproj/argo-cd/issues/1697)
@@ -926,7 +926,7 @@ Argo CD introduces Custom Resource Actions to allow users to provide their own L
 * Resources that do not have health no longer appear to be healthy. 
 * Support for configuring Git repo credentials at a domain/org level
 * Support for configuring requested OIDC provider scopes and enforced RBAC scopes
-* Support for configuring monitored resources whitelist in addition to excluded resources
+* Support for configuring monitored resources allowlist in addition to excluded resources
 
 ### Breaking Changes
 
@@ -957,9 +957,9 @@ Argo CD introduces Custom Resource Actions to allow users to provide their own L
 * UI / API Errors Truncated, Time Out #1386
 * UI Enhancement Proposals Quick Wins #1274
 * Update argocd-util import/export to support proper backup and restore (#1328)
-* Whitelisting repos/clusters in projects should consider repo/cluster permissions #1432
+* Allowlisting repos/clusters in projects should consider repo/cluster permissions #1432
 * Adds support for configuring repo creds at a domain/org level. (#1332)
-* Implement whitelist option analogous to `resource.exclusions` (#1490)
+* Implement allowlist option analogous to `resource.exclusions` (#1490)
 * Added ability to sync specific labels from the command line (#1241)
 * Improve rendering app image information (#1552)
 * Add liveness probe to repo server/api servers (#1546)

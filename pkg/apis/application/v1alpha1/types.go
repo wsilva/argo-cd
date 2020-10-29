@@ -1501,8 +1501,8 @@ type AppProjectList struct {
 }
 
 // AppProject provides a logical grouping of applications, providing controls for:
-// * where the apps may deploy to (cluster whitelist)
-// * what may be deployed (repository whitelist, resource whitelist/blacklist)
+// * where the apps may deploy to (cluster allowlist)
+// * what may be deployed (repository allowlist, resource allowlist/blocklist)
 // * who can access these applications (roles, OIDC group claims bindings)
 // * and what they can do (RBAC policies)
 // * automation access to these roles (JWT tokens)
@@ -1858,20 +1858,20 @@ type AppProjectSpec struct {
 	Description string `json:"description,omitempty" protobuf:"bytes,3,opt,name=description"`
 	// Roles are user defined RBAC roles associated with this project
 	Roles []ProjectRole `json:"roles,omitempty" protobuf:"bytes,4,rep,name=roles"`
-	// ClusterResourceWhitelist contains list of whitelisted cluster level resources
-	ClusterResourceWhitelist []metav1.GroupKind `json:"clusterResourceWhitelist,omitempty" protobuf:"bytes,5,opt,name=clusterResourceWhitelist"`
-	// NamespaceResourceBlacklist contains list of blacklisted namespace level resources
-	NamespaceResourceBlacklist []metav1.GroupKind `json:"namespaceResourceBlacklist,omitempty" protobuf:"bytes,6,opt,name=namespaceResourceBlacklist"`
+	// ClusterResourceAllowlist contains list of allowlisted cluster level resources
+	ClusterResourceAllowlist []metav1.GroupKind `json:"clusterResourceAllowlist,omitempty" protobuf:"bytes,5,opt,name=clusterResourceAllowlist"`
+	// NamespaceResourceBlocklist contains list of blocklisted namespace level resources
+	NamespaceResourceBlocklist []metav1.GroupKind `json:"namespaceResourceBlocklist,omitempty" protobuf:"bytes,6,opt,name=namespaceResourceBlocklist"`
 	// OrphanedResources specifies if controller should monitor orphaned resources of apps in this project
 	OrphanedResources *OrphanedResourcesMonitorSettings `json:"orphanedResources,omitempty" protobuf:"bytes,7,opt,name=orphanedResources"`
 	// SyncWindows controls when syncs can be run for apps in this project
 	SyncWindows SyncWindows `json:"syncWindows,omitempty" protobuf:"bytes,8,opt,name=syncWindows"`
-	// NamespaceResourceWhitelist contains list of whitelisted namespace level resources
-	NamespaceResourceWhitelist []metav1.GroupKind `json:"namespaceResourceWhitelist,omitempty" protobuf:"bytes,9,opt,name=namespaceResourceWhitelist"`
+	// NamespaceResourceAllowlist contains list of allowlisted namespace level resources
+	NamespaceResourceAllowlist []metav1.GroupKind `json:"namespaceResourceAllowlist,omitempty" protobuf:"bytes,9,opt,name=namespaceResourceAllowlist"`
 	// List of PGP key IDs that commits to be synced to must be signed with
 	SignatureKeys []SignatureKey `json:"signatureKeys,omitempty" protobuf:"bytes,10,opt,name=signatureKeys"`
-	// ClusterResourceBlacklist contains list of blacklisted cluster level resources
-	ClusterResourceBlacklist []metav1.GroupKind `json:"clusterResourceBlacklist,omitempty" protobuf:"bytes,11,opt,name=clusterResourceBlacklist"`
+	// ClusterResourceBlocklist contains list of blocklisted cluster level resources
+	ClusterResourceBlocklist []metav1.GroupKind `json:"clusterResourceBlocklist,omitempty" protobuf:"bytes,11,opt,name=clusterResourceBlocklist"`
 }
 
 // SyncWindows is a collection of sync windows in this project
@@ -2405,18 +2405,18 @@ func isResourceInList(res metav1.GroupKind, list []metav1.GroupKind) bool {
 
 // IsGroupKindPermitted validates if the given resource group/kind is permitted to be deployed in the project
 func (proj AppProject) IsGroupKindPermitted(gk schema.GroupKind, namespaced bool) bool {
-	var isWhiteListed, isBlackListed bool
+	var isAllowListed, isBlockListed bool
 	res := metav1.GroupKind{Group: gk.Group, Kind: gk.Kind}
 
 	if namespaced {
-		isWhiteListed = len(proj.Spec.NamespaceResourceWhitelist) == 0 || isResourceInList(res, proj.Spec.NamespaceResourceWhitelist)
-		isBlackListed = isResourceInList(res, proj.Spec.NamespaceResourceBlacklist)
-		return isWhiteListed && !isBlackListed
+		isAllowListed = len(proj.Spec.NamespaceResourceAllowlist) == 0 || isResourceInList(res, proj.Spec.NamespaceResourceAllowlist)
+		isBlockListed = isResourceInList(res, proj.Spec.NamespaceResourceBlocklist)
+		return isAllowListed && !isBlockListed
 	}
 
-	isWhiteListed = len(proj.Spec.ClusterResourceWhitelist) == 0 || isResourceInList(res, proj.Spec.ClusterResourceWhitelist)
-	isBlackListed = isResourceInList(res, proj.Spec.ClusterResourceBlacklist)
-	return isWhiteListed && !isBlackListed
+	isAllowListed = len(proj.Spec.ClusterResourceAllowlist) == 0 || isResourceInList(res, proj.Spec.ClusterResourceAllowlist)
+	isBlockListed = isResourceInList(res, proj.Spec.ClusterResourceBlocklist)
+	return isAllowListed && !isBlockListed
 }
 
 func (proj AppProject) IsLiveResourcePermitted(un *unstructured.Unstructured, server string) bool {

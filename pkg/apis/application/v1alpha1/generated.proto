@@ -23,8 +23,8 @@ message AWSAuthConfig {
 }
 
 // AppProject provides a logical grouping of applications, providing controls for:
-// * where the apps may deploy to (cluster whitelist)
-// * what may be deployed (repository whitelist, resource whitelist/blacklist)
+// * where the apps may deploy to (cluster allowlist)
+// * what may be deployed (repository allowlist, resource allowlist/blocklist)
 // * who can access these applications (roles, OIDC group claims bindings)
 // * and what they can do (RBAC policies)
 // * automation access to these roles (JWT tokens)
@@ -62,11 +62,11 @@ message AppProjectSpec {
   // Roles are user defined RBAC roles associated with this project
   repeated ProjectRole roles = 4;
 
-  // ClusterResourceWhitelist contains list of whitelisted cluster level resources
-  repeated k8s.io.apimachinery.pkg.apis.meta.v1.GroupKind clusterResourceWhitelist = 5;
+  // ClusterResourceAllowlist contains list of allowlisted cluster level resources
+  repeated k8s.io.apimachinery.pkg.apis.meta.v1.GroupKind clusterResourceAllowlist = 5;
 
-  // NamespaceResourceBlacklist contains list of blacklisted namespace level resources
-  repeated k8s.io.apimachinery.pkg.apis.meta.v1.GroupKind namespaceResourceBlacklist = 6;
+  // NamespaceResourceBlocklist contains list of blocklisted namespace level resources
+  repeated k8s.io.apimachinery.pkg.apis.meta.v1.GroupKind namespaceResourceBlocklist = 6;
 
   // OrphanedResources specifies if controller should monitor orphaned resources of apps in this project
   optional OrphanedResourcesMonitorSettings orphanedResources = 7;
@@ -74,14 +74,14 @@ message AppProjectSpec {
   // SyncWindows controls when syncs can be run for apps in this project
   repeated SyncWindow syncWindows = 8;
 
-  // NamespaceResourceWhitelist contains list of whitelisted namespace level resources
-  repeated k8s.io.apimachinery.pkg.apis.meta.v1.GroupKind namespaceResourceWhitelist = 9;
+  // NamespaceResourceAllowlist contains list of allowlisted namespace level resources
+  repeated k8s.io.apimachinery.pkg.apis.meta.v1.GroupKind namespaceResourceAllowlist = 9;
 
   // List of PGP key IDs that commits to be synced to must be signed with
   repeated SignatureKey signatureKeys = 10;
 
-  // ClusterResourceBlacklist contains list of blacklisted cluster level resources
-  repeated k8s.io.apimachinery.pkg.apis.meta.v1.GroupKind clusterResourceBlacklist = 11;
+  // ClusterResourceBlocklist contains list of blocklisted cluster level resources
+  repeated k8s.io.apimachinery.pkg.apis.meta.v1.GroupKind clusterResourceBlocklist = 11;
 }
 
 // AppProjectStatus contains information about appproj

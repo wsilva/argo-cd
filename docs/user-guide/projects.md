@@ -22,7 +22,7 @@ spec:
   destinations:
   - namespace: '*'
     server: '*'
-  clusterResourceWhitelist:
+  clusterResourceAllowlist:
   - group: '*'
     kind: '*'
 ```
@@ -55,8 +55,8 @@ argocd proj remove-destination <PROJECT> <CLUSTER>,<NAMESPACE>
 ```
 
 Permitted destination K8s resource kinds are managed with the commands. Note that namespaced-scoped
-resources are restricted via a blacklist, whereas cluster-scoped resources are restricted via
-whitelist.
+resources are restricted via a blocklist, whereas cluster-scoped resources are restricted via
+allowlist.
 
 ```bash
 argocd proj allow-cluster-resource <PROJECT> <GROUP> <KIND>
@@ -185,10 +185,10 @@ Note that each project role policy rule must be scoped to that project only. Use
 Global projects can be configured to provide configurations that other projects can inherit from. 
 
 Projects, which match `matchExpressions` specified in `argocd-cm` ConfigMap, inherit the following fields from the global project:
-* namespaceResourceBlacklist
-* namespaceResourceWhitelist
-* clusterResourceBlacklist
-* clusterResourceWhitelist
+* namespaceResourceBlocklist
+* namespaceResourceAllowlist
+* clusterResourceBlocklist
+* clusterResourceAllowlist
 * SyncWindows
 
 Configure global projects in `argocd-cm` ConfigMap:
